@@ -1,18 +1,19 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 
 const uuid = require('uuid/v4');
 const jwt = require('jwt-simple');
 
-
 const app = express();
 
-//Normally would be in process.env
-const secret = Buffer.from('fe1a1915a379f3be5394b64d14794932', 'hex');
+const port = process.env.PORT || 4000;
+
+const secret = Buffer.from(process.env.SECRET, process.env.SECRET_ENCODING);
 
 app.use(express.json());
 
-const whitelist = ['https://bubbly-colors.netlify.com', 'http://localhost:3000'];
+const whitelist = ['https://bubbly-colors.netlify.com'];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -23,7 +24,9 @@ const corsOptions = {
   }
 }
 
-app.use(cors(corsOptions));
+app.use(cors());
+
+app.options('*', cors()) // include before other routes
 
 let users = [
   {
@@ -128,6 +131,10 @@ function authenticator(req, res, next) {
   }
 }
 
+app.get("/", function (req, res) {
+  res.send("App is working 👍");
+});
+
 app.post('/api/validate', (req, res) => {
   const { token } = req.body;
 
@@ -200,10 +207,6 @@ app.delete("/api/colors/:id", authenticator, (req, res) => {
   res.status(202).send(req.params.id);
 });
 
-app.get("/", function (req, res) {
-  res.send("App is working 👍");
-});
-
-app.listen(5000, () => {
-  console.log("Server listening on port 5000");
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
