@@ -1,15 +1,16 @@
 const express = require("express");
+const cors = require("cors");
+
 const uuid = require('uuid/v4');
 const jwt = require('jwt-simple');
 
-const cors = require("corswwwww");
 
 const app = express();
 
 //Normally would be in process.env
 const secret = Buffer.from('fe1a1915a379f3be5394b64d14794932', 'hex');
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors());
 
 let users = [
