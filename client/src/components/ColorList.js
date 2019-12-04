@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { axiosWithAuth } from "./axiosWithAuth";
+import { base_url } from './base_url';
 
 const initialColor = {
   color: "",
@@ -19,7 +20,7 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
   const addColor = e => {
     e.preventDefault();
     axiosWithAuth()
-      .post('http://localhost:5000/api/colors', newColor)
+      .post(`${base_url}/api/colors`, newColor)
       .then(response => {
         updateColors(response.data);
       })
@@ -56,7 +57,7 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
   const saveEdit = e => {
     e.preventDefault();
     axiosWithAuth()
-      .put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
+      .put(`${base_url}/api/colors/${colorToEdit.id}`, colorToEdit)
       .then(response => {
         updateColors(colors.map(color => {
           if (color.id === response.data.id) {
@@ -74,7 +75,7 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
 
   const deleteColor = color => {
     axiosWithAuth()
-      .delete(`http://localhost:5000/api/colors/${color.id}`)
+      .delete(`${base_url}/api/colors/${color.id}`)
       .then(response => {
         updateColors(colors.filter(color => color.id !== response.data));
       })

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import axios from 'axios';
 
+import { base_url } from './base_url';
+
 const Login = ({ history }) => {
   const [inputs, setInputs] = useState({
     username: '',
@@ -19,7 +21,7 @@ const Login = ({ history }) => {
     e.preventDefault();
 
     //Send payload (username, password)
-    axios.post('http://localhost:5000/api/login', inputs)
+    axios.post(`${base_url}/api/login`, inputs)
       .then(response => {
         //Server will respond with a token in the payload if successful
 

@@ -1,11 +1,12 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import axios from 'axios';
+import { base_url } from './base_url';
 
 const isAuthenticated = async () => {
   const token = sessionStorage.getItem("token");
   if (token) {
-    return await axios.post('http://localhost:5000/api/validate', { token: token })
+    return await axios.post(`${base_url}/api/validate`, { token: token })
       .then(response => {
         if (response.data.isAuthenticated) {
           return true;
