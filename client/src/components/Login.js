@@ -21,7 +21,7 @@ const Login = ({ history }) => {
     e.preventDefault();
 
     //Send payload (username, password)
-    axios.post(`${base_url}/api/login`, inputs)
+    axios.post(`${base_url}/api/user/login`, inputs)
       .then(response => {
         //Server will respond with a token in the payload if successful
 

@@ -3,7 +3,7 @@ const moment = require('moment');
 const bcrypt = require('bcrypt');
 const jwt = require('jwt-simple');
 
-const userDB = require('./dbHelpers');
+const userDB = require('./dbUsers');
 
 const authenticator = require('../users/authenticator');
 

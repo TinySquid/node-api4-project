@@ -9,9 +9,21 @@ exports.up = function (knex) {
       users
         .string('password')
         .notNullable();
-    });
+    })
+    .createTable('colors', function (colors) {
+      colors.increments();
+      colors
+        .string('color')
+        .notNullable();
+      colors
+        .string('hex')
+        .notNullable();
+      colors
+        .int('user_id')
+        .notNullable();
+    })
 };
 
 exports.down = function (knex) {
-  return knex.schema.dropTableIfExists('users');
+  return knex.schema.dropTableIfExists('users').dropTableIfExists('colors');
 };
