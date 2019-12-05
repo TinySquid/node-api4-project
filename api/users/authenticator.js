@@ -1,7 +1,7 @@
 const moment = require('moment');
 const jwt = require('jwt-simple');
 
-const userDB = require('./dbHelpers');
+const userDB = require('./dbUsers');
 
 function authenticator(req, res, next) {
   const { authorization } = req.headers;
@@ -24,7 +24,7 @@ function authenticator(req, res, next) {
 
             //Set new token in req for route to access and send back to client.
             req.token = updatedToken;
-
+            req.userId = token.id;
             //Proceed.
             next();
           } else {
