@@ -5,11 +5,11 @@ const jwt = require('jwt-simple');
 
 const userDB = require('./dbHelpers');
 
-// const authenticator = require('../users/authenticator');
+const authenticator = require('../users/authenticator');
 
-// router.post('/validate', authenticator, (req, res) => {
-//   res.status(200).json();
-// });
+router.post('/validate', authenticator, (req, res) => {
+  res.status(200).json();
+});
 
 router.post("/login", (req, res) => {
   /* Steps for user login authentication.
@@ -30,7 +30,7 @@ router.post("/login", (req, res) => {
               if (result) {
                 //User has provided the correct password.
                 const secret = Buffer.from(process.env.SECRET, process.env.SECRET_ENCODING); //Get secret to generate JWT.
-                const token = jwt.encode({ id: user.id, username: user.username, expiration: moment().add(10, 'minutes').format() }, secret);
+                const token = jwt.encode({ id: user.id, username: user.username, expiration: moment().add(10, 'minutes') }, secret);
                 res.status(200).json({ token: token });
               } else {
                 //Invalid password provided for specified user.
