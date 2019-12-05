@@ -1,46 +1,44 @@
 const db = require('../../data/dbConfig');
 
 module.exports = {
-  get,
   getById,
-  getByUsername,
+  getByUserId,
   insert,
   update,
   remove,
 };
 
 function get() {
-  return db('users');
+  return db('colors');
 }
 
 function getById(id) {
-  return db('users')
+  return db('colors')
     .where({ id })
     .first();
 }
 
-function getByUsername(username) {
-  return db('users')
-    .where({ username })
-    .first();
+function getByUserId(userId) {
+  return db('colors')
+    .where({ userId });
 }
 
-function insert(user) {
-  return db('users')
-    .insert(user)
+function insert(color) {
+  return db('colors')
+    .insert(color)
     .then(ids => {
       return getById(ids[0]);
     });
 }
 
 function update(id, changes) {
-  return db('users')
+  return db('colors')
     .where({ id })
     .update(changes);
 }
 
 function remove(id) {
-  return db('users')
+  return db('colors')
     .where('id', id)
     .del();
 }
