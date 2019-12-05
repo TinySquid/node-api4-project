@@ -57,8 +57,36 @@ router.post("/login", (req, res) => {
 });
 
 //POST /api/user/signup - Add new user to database.
-// router.post("/signup", (req, res) => {
-//   res.status(200).json();
-// });
+router.post("/signup", (req, res) => {
+  /* Steps for adding a user
+  Verify request body
+  Hash password with bcrypt
+  Add user to database
+  Send 201 response
+  */
+  const { username, password } = req.body;
+
+  if (username && password) {
+    //New user credentials provided.
+    bcrypt.hash(password, 10)
+      .then(hash => {
+        //Add user to database
+        userDB.insert({
+          username: username,
+          password: hash
+        })
+          .then(() => {
+            //Send successful response
+            res.status(201).json({ message: "Added new user." });
+          })
+          .catch(error => {
+            res.status(500).json({ message: "Error adding user to database.", error: error });
+          });
+      })
+      .catch(error => {
+        res.status(500).json({ message: "Error adding user to database", error: error });
+      });
+  }
+});
 
 module.exports = router;
