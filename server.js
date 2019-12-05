@@ -1,7 +1,7 @@
 //BASE
 require('dotenv').config();
 const express = require("express");
-const bcrypt = require('bcrypt');
+const helmet = require("helmet");
 const cors = require("cors");
 
 //ROUTES
@@ -13,6 +13,8 @@ const port = process.env.PORT || 4000;
 const app = express();
 
 app.use(express.json());
+
+app.use(helmet());
 
 //CORS CONFIGURATION
 const whitelist = ['https://bubbly-colors.netlify.com'];
@@ -28,7 +30,7 @@ const corsOptions = {
 
 app.use(cors());
 
-app.options('*', cors()) // include before other routes
+app.options('*', cors()); // include before other routes
 
 app.use('/api', apiRouter);
 
@@ -36,6 +38,7 @@ app.get("/", function (req, res) {
   res.send("API is online 👍");
 });
 
+//Route fallback (404)
 app.use(function (req, res) {
   res.status(404).json({ message: "Not found" });
 });
