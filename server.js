@@ -36,6 +36,10 @@ app.get("/", function (req, res) {
   res.send("API is online 👍");
 });
 
+app.use(function (req, res) {
+  res.status(404).json({ message: "Not found" });
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
