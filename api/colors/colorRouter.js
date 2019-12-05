@@ -7,6 +7,7 @@ const authenticator = require('../users/authenticator');
 //All color routes require authentication.
 router.use(authenticator);
 
+//GET /colors - Get all colors by user id (id is retreived from JWT).
 router.get("/", (req, res) => {
   const id = req.userId;
 
@@ -22,48 +23,75 @@ router.get("/", (req, res) => {
     });
 });
 
-//POST api/colors
-router.post("/", (req, res) => {
-  const { color, code } = req.body;
-
-  if (color && code) {
-    colorDB.insert({ color: color, hex: code, user_id: req.userId })
-      .then(color => {
-        res.status(201).json({
-          token: req.token,
-          color: color
-        });
-      })
-      .catch(error => {
-        res.status(500).json({ message: "Could not add color to the database", error: error });
+//POST /colors - Add new color
+router.post("/", validateColor, (req, res) => {
+  colorDB.insert({ ...req.body, user_id: req.userId })
+    .then(color => {
+      res.status(201).json({
+        token: req.token,
+        color: color
       });
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Could not add color to the database", error: error });
+    });
+});
+
+//PUT /colors/:id - Edit existing color by id
+router.put("/:id", validateColor, (req, res) => {
+  const id = req.params.id;
+
+  colorDB.update(id, req.body)
+    .then(color => {
+      res.status(200).json(color)
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Could not update color info", error: error });
+    });
+});
+
+//DELETE /colors/:id - Delete a color by ID.
+router.delete("/:id", validateColorId, (req, res) => {
+  const id = req.params.id;
+
+  colorDB.remove(id, req.userId)
+    .then(didDelete => {
+      if (didDelete) {
+        res.status(200).json();
+      } else {
+        res.status(404).json({ message: "Color not found" });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Could not delete color", error: error });
+    });
+});
+
+
+//MIDDLEWARE
+//Validate that a valid color ID has been given.
+function validateColorId(req, res, next) {
+  const id = req.params.id;
+  colorDB.getById(id)
+    .then(color => {
+      if (color) {
+        next();
+      } else {
+        res.status(404).json({ message: "Specified color id not found" });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Could not get color by id", error: error })
+    });
+}
+
+//Validate that properties for a color have been given
+function validateColor(req, res, next) {
+  if (req.body.color && req.body.hex) {
+    next();
   } else {
     res.status(400).json({ message: "Please provide color and color code" });
   }
-});
-
-// router.put("/colors/:id", (req, res) => {
-//   if (!req.params.id)
-//     res.status(400).send("Your request is missing the color id");
-//   if (req.body.id === undefined || !req.body.color || !req.body.code) {
-//     res
-//       .status(422)
-//       .send("Make sure your request body has all the fields it needs");
-//   }
-//   colors = colors.map(color => {
-//     if (`${color.id}` === req.params.id) {
-//       return req.body;
-//     }
-//     return color;
-//   });
-//   res.status(200).send(req.body);
-// });
-
-// router.delete("/colors/:id", (req, res) => {
-//   if (!req.params.id)
-//     res.status(400).send("Your request is missing the color id");
-//   colors = colors.filter(color => `${color.id}` !== req.params.id);
-//   res.status(202).send(req.params.id);
-// });
+}
 
 module.exports = router;

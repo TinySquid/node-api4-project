@@ -8,10 +8,6 @@ module.exports = {
   remove,
 };
 
-function get() {
-  return db('colors');
-}
-
 function getById(id) {
   return db('colors')
     .where({ id })
@@ -33,12 +29,13 @@ function insert(color) {
 
 function update(id, changes) {
   return db('colors')
-    .where({ id })
-    .update(changes);
+    .where({ id: id })
+    .update(changes)
+    .then(() => getById(id));
 }
 
-function remove(id) {
+function remove(id, user_id) {
   return db('colors')
-    .where('id', id)
+    .where({ id: id, user_id: user_id })
     .del();
 }
