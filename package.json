@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "db:latest": "knex migrate:latest",
+    "seeds": "knex seed:run"
   },
   "repository": {
     "type": "git",
@@ -18,10 +20,13 @@
   },
   "homepage": "https://github.com/TinySquid/node-api4-project#readme",
   "dependencies": {
+    "bcrypt": "^3.0.7",
     "cors": "^2.8.4",
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "jwt-simple": "^0.5.6",
+    "knex": "^0.20.3",
+    "sqlite3": "^4.1.1",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
