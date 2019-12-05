@@ -20,7 +20,7 @@ function getById(id) {
 
 function getByUserId(userId) {
   return db('colors')
-    .where({ userId });
+    .where({ user_id: userId });
 }
 
 function insert(color) {
