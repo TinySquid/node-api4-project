@@ -4,7 +4,7 @@ import { base_url } from './base_url';
 
 const initialColor = {
   color: "",
-  code: { hex: "" }
+  hex: ""
 };
 
 const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
@@ -12,9 +12,7 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   const [newColor, setNewColor] = useState({
     color: '',
-    code: {
-      hex: ''
-    }
+    hex: ''
   });
 
   const addColor = e => {
@@ -22,31 +20,23 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
     axiosWithAuth()
       .post(`${base_url}/api/colors`, newColor)
       .then(response => {
-        updateColors(response.data);
+        sessionStorage.setItem("token", response.data.token);
+        updateColors([...colors, response.data.color]);
       })
       .catch(error => console.log(error))
       .finally(() => {
         setNewColor({
           color: '',
-          code: {
-            hex: ''
-          }
+          hex: ''
         });
       })
   }
 
   const handleAddColor = e => {
-    if (e.target.name === "code") {
-      setNewColor({
-        ...newColor,
-        [e.target.name]: { hex: e.target.value }
-      });
-    } else {
-      setNewColor({
-        ...newColor,
-        [e.target.name]: e.target.value
-      });
-    }
+    setNewColor({
+      ...newColor,
+      [e.target.name]: e.target.value
+    });
   }
 
   const editColor = color => {
@@ -59,9 +49,10 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
     axiosWithAuth()
       .put(`${base_url}/api/colors/${colorToEdit.id}`, colorToEdit)
       .then(response => {
+        sessionStorage.setItem("token", response.data.token);
         updateColors(colors.map(color => {
-          if (color.id === response.data.id) {
-            return response.data
+          if (color.id === response.data.color.id) {
+            return response.data.color
           } else {
             return color;
           }
@@ -77,7 +68,8 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
     axiosWithAuth()
       .delete(`${base_url}/api/colors/${color.id}`)
       .then(response => {
-        updateColors(colors.filter(color => color.id !== response.data));
+        sessionStorage.setItem("token", response.data.token);
+        updateColors(colors.filter(listColor => listColor.id !== color.id));
       })
       .catch(error => console.log(error));
   };
@@ -100,7 +92,7 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
             </span>
             <div
               className="color-box"
-              style={{ backgroundColor: color.code.hex }}
+              style={{ backgroundColor: color.hex }}
             />
           </li>
         ))}
@@ -123,10 +115,10 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
               onChange={e =>
                 setColorToEdit({
                   ...colorToEdit,
-                  code: { hex: e.target.value }
+                  hex: e.target.value
                 })
               }
-              value={colorToEdit.code.hex}
+              value={colorToEdit.hex}
             />
           </label>
           <div className="button-row">
@@ -144,7 +136,7 @@ const ColorList = ({ colors, updateColors, reorderColors, logout }) => {
         </label>
         <label>
           hex code:
-        <input type="text" name="code" value={newColor.code.hex} onChange={handleAddColor} placeholder="Color Value" required />
+        <input type="text" name="hex" value={newColor.hex} onChange={handleAddColor} placeholder="Color Value" required />
         </label>
         <div className="button-row">
           <button type="submit">Add New Color</button>

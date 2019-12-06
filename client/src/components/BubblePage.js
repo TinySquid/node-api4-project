@@ -6,8 +6,8 @@ import { base_url } from './base_url';
 import Bubbles from "./Bubbles";
 import ColorList from "./ColorList";
 
-const BubblePage = (props) => {
-  const [colorList, setColorList] = useState([]);
+const BubblePage = () => {
+  const [colorList, setColorList] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const history = useHistory();
 
@@ -24,10 +24,14 @@ const BubblePage = (props) => {
     axiosWithAuth()
       .get(`${base_url}/api/colors`)
       .then(response => {
-        setColorList(response.data);
+        console.log(response);
+        sessionStorage.setItem("token", response.data.token);
+        setColorList(response.data.colors);
       })
       .catch(error => console.log(error))
-  }, [])
+  }, []);
+
+  if (!colorList) return <div>Loading color data...</div>
 
   return (
     <>

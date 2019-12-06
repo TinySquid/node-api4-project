@@ -36,7 +36,7 @@ const Bubbles = ({ colors, refresh }) => {
                       cx={x}
                       cy={y}
                       r={r}
-                      fill={colors[i].code.hex}
+                      fill={colors[i].hex}
                     />
                   );
                 }

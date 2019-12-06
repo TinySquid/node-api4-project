@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -11,6 +10,8 @@ const Login = ({ history }) => {
     password: ''
   });
 
+  const [error, setError] = useState('');
+
   const handleInputs = e => {
     setInputs({
       ...inputs,
@@ -21,26 +22,19 @@ const Login = ({ history }) => {
   const handleLogin = e => {
     e.preventDefault();
 
-    //Send payload (username, password)
-    axios.post(`${base_url}/api/user/login`, inputs)
+    axios.post(`${base_url}/api/user/signup`, inputs)
       .then(response => {
-        //Server will respond with a token in the payload if successful
-        const token = response.data.token;
-        if (token) {
-          //Store auth token into sessionStorage 
-          sessionStorage.setItem('token', token);
-
-          //Redirect to profile
-          history.push('/bubbles');
-        }
+        history.push('/login');
       })
-      .catch(error => console.log(error))
-    // when you have handled the token, navigate to the BubblePage route
+      .catch(error => {
+        setError("User already exists");
+      });
   }
 
   return (
     <form className="login" onSubmit={handleLogin}>
-      <h1>Welcome to the Bubble App!</h1>
+      <h1>Create an account</h1>
+      <h3 className="login__error" style={{ color: 'red' }}>{error}</h3>
       <label>
         Username:
       <input type="text" name="username" value={inputs.username} onChange={handleInputs} required />
@@ -49,8 +43,7 @@ const Login = ({ history }) => {
         Password:
       <input type="password" name="password" value={inputs.password} onChange={handleInputs} required />
       </label>
-      <Link to="/signup" className="signup__link">Need an account? Register here.</Link>
-      <button type="submit">Login</button>
+      <button type="submit">Signup</button>
     </form>
   );
 };

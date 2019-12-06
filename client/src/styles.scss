@@ -26,7 +26,7 @@ body,
   border-top: 1px solid black;
 }
 
-.reorder button{
+.reorder button {
   width: 100%;
   height: 2.4rem;
   border: none;
@@ -142,7 +142,7 @@ form {
     flex-direction: column;
     align-items: center;
 
-    &:last-child{
+    &:last-child {
       margin-top: 1rem;
     }
   }
@@ -152,11 +152,21 @@ form {
   }
 
   button {
-    margin-top: 1rem;
+    margin: 0.5rem 0;
     height: 2rem;
     width: 60%;
     border: none;
     background-color: black;
     color: white;
   }
+}
+
+.signup__link {
+  margin-top: 0.6rem;
+}
+
+.login__error {
+  margin: 0;
+  margin-top: -20px;
+  padding: 0;
 }
