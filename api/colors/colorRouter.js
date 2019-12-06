@@ -17,10 +17,16 @@ router.get("/", (req, res) => {
       if (colors.length < 1) {
         colorDB.insert(getDefaultColors(id))
           .then(() => {
-            res.status(200).json({
-              token: req.token,
-              colors: getDefaultColors(id)
-            });
+            colorDB.getByUserId(id)
+              .then(colors => {
+                res.status(200).json({
+                  token: req.token,
+                  colors: colors
+                });
+              })
+              .catch(error => {
+                res.status(500).json({ message: "Could not get default colors", error: error });
+              });
           })
           .catch(error => {
             res.status(500).json({ message: "Could not set default colors", error: error });

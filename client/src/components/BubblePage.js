@@ -24,7 +24,7 @@ const BubblePage = () => {
     axiosWithAuth()
       .get(`${base_url}/api/colors`)
       .then(response => {
-        console.log(response);
+        // console.log(response);
         sessionStorage.setItem("token", response.data.token);
         setColorList(response.data.colors);
       })
