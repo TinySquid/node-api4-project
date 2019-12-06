@@ -3,6 +3,7 @@ const router = require('express').Router();
 const colorDB = require('./dbColors');
 
 const authenticator = require('../users/authenticator');
+const getDefaultColors = require('../../defaultColors');
 
 //All color routes require authentication.
 router.use(authenticator);
@@ -13,10 +14,23 @@ router.get("/", (req, res) => {
 
   colorDB.getByUserId(id)
     .then(colors => {
-      res.status(200).json({
-        token: req.token,
-        colors: colors
-      });
+      if (colors.length < 1) {
+        colorDB.insert(getDefaultColors(id))
+          .then(() => {
+            res.status(200).json({
+              token: req.token,
+              colors: getDefaultColors(id)
+            });
+          })
+          .catch(error => {
+            res.status(500).json({ message: "Could not set default colors", error: error });
+          });
+      } else {
+        res.status(200).json({
+          token: req.token,
+          colors: colors
+        });
+      }
     })
     .catch(error => {
       res.status(500).json({ message: "Could not get colors from database" });
@@ -43,7 +57,10 @@ router.put("/:id", validateColor, (req, res) => {
 
   colorDB.update(id, req.body)
     .then(color => {
-      res.status(200).json(color)
+      res.status(200).json({
+        token: req.token,
+        color: color
+      });
     })
     .catch(error => {
       res.status(500).json({ message: "Could not update color info", error: error });
@@ -57,7 +74,7 @@ router.delete("/:id", validateColorId, (req, res) => {
   colorDB.remove(id, req.userId)
     .then(didDelete => {
       if (didDelete) {
-        res.status(200).json();
+        res.status(200).json({ token: req.token });
       } else {
         res.status(404).json({ message: "Color not found" });
       }

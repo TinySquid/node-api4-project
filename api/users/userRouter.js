@@ -67,24 +67,30 @@ router.post("/signup", (req, res) => {
   const { username, password } = req.body;
 
   if (username && password) {
-    //New user credentials provided.
-    bcrypt.hash(password, 10)
-      .then(hash => {
-        //Add user to database
-        userDB.insert({
-          username: username,
-          password: hash
-        })
-          .then(() => {
-            //Send successful response
-            res.status(201).json({ message: "Added new user." });
-          })
-          .catch(error => {
-            res.status(500).json({ message: "Error adding user to database.", error: error });
-          });
-      })
-      .catch(error => {
-        res.status(500).json({ message: "Error adding user to database", error: error });
+    userDB.getByUsername(username)
+      .then(user => {
+        if (user) {
+          res.status(400).json({ message: "User already exists" });
+        } else {
+          bcrypt.hash(password, 10)
+            .then(hash => {
+              //Add user to database
+              userDB.insert({
+                username: username,
+                password: hash
+              })
+                .then(() => {
+                  //Send successful response
+                  res.status(201).json({ message: "Added new user." });
+                })
+                .catch(error => {
+                  res.status(500).json({ message: "Error adding user to database.", error: error });
+                });
+            })
+            .catch(error => {
+              res.status(500).json({ message: "Error adding user to database", error: error });
+            });
+        }
       });
   }
 });
