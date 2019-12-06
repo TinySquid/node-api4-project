@@ -1,5 +1,5 @@
-const defaultColors = require('../../defaultColors');
+const getDefaultColors = require('../../defaultColors');
 
 exports.seed = function (knex) {
-  return knex('colors').insert(defaultColors);
+  return knex('colors').insert(getDefaultColors(1));
 };
