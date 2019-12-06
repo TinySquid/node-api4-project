@@ -43,6 +43,7 @@ const Login = ({ history }) => {
         Password:
       <input type="password" name="password" value={inputs.password} onChange={handleInputs} required />
       </label>
+      <Link to="/login" className="signup__link">Already have an account? Login here.</Link>
       <button type="submit">Signup</button>
     </form>
   );

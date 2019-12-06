@@ -11,6 +11,8 @@ const Login = ({ history }) => {
     password: ''
   });
 
+  const [error, setError] = useState('');
+
   const handleInputs = e => {
     setInputs({
       ...inputs,
@@ -34,13 +36,16 @@ const Login = ({ history }) => {
           history.push('/bubbles');
         }
       })
-      .catch(error => console.log(error))
+      .catch(error => {
+        setError("Invalid username / password combination");
+      });
     // when you have handled the token, navigate to the BubblePage route
   }
 
   return (
     <form className="login" onSubmit={handleLogin}>
       <h1>Welcome to the Bubble App!</h1>
+      <h3 className="login__error" style={{ color: 'red' }}>{error}</h3>
       <label>
         Username:
       <input type="text" name="username" value={inputs.username} onChange={handleInputs} required />
